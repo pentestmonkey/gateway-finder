@@ -16,6 +16,12 @@ You give the script the IP address of a system on the Internet you're trying to 
 
 It will report separately which systems send an ICMP "TTL exceeded in transit" message back (indicating that they're routers) and which respond to the probe (indicating that they're gateways to the Internet).
 
+[ Dependencies ]
+
+Python and Scapy.  On Debian / Ubuntu you should just need to do this:
+
+# apt-get install python-scapy
+
 [ Usage ]
 
 # python gateway-finder.py -h
