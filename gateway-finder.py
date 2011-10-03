@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # gateway-finder - Tool to identify routers on the local LAN and paths to the Internet
 # Copyright (C) 2011 pentestmonkey@pentestmonkey.net
 # 
