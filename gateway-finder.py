@@ -111,11 +111,11 @@ seq = 0
 packets = []
 for mac in macs:
 	# Echo request, TTL=1
-	packets.append({ 'packet': Ether(dst=mac)/IP(dst=options.ip,ttl=5)/ICMP(seq=seq),'type': 'ping', 'dstip': options.ip, 'dstmac': mac, 'seq': seq, 'message': '%s [%s] appears to route ICMP Ping packets to %s.  Received ICMP TTL Exceeded in transit response.' % (mac, ipofmac[mac], options.ip) })
+	packets.append({ 'packet': Ether(dst=mac)/IP(dst=options.ip,ttl=1)/ICMP(seq=seq),'type': 'ping', 'dstip': options.ip, 'dstmac': mac, 'seq': seq, 'message': '%s [%s] appears to route ICMP Ping packets to %s.  Received ICMP TTL Exceeded in transit response.' % (mac, ipofmac[mac], options.ip) })
 	seq = seq + 1
 
 	# TCP SYN to port 80, TTL=1
-	packets.append({ 'packet': Ether(dst=mac)/IP(dst=options.ip,ttl=5)/TCP(seq=seq), 'type': 'tcpsyn', 'dstip': options.ip, 'dstmac': mac, 'seq': seq, 'message': '%s [%s] appears to route TCP packets %s:80.  Received ICMP TTL Exceeded in transit response.' % (mac, ipofmac[mac], options.ip) })
+	packets.append({ 'packet': Ether(dst=mac)/IP(dst=options.ip,ttl=1)/TCP(seq=seq), 'type': 'tcpsyn', 'dstip': options.ip, 'dstmac': mac, 'seq': seq, 'message': '%s [%s] appears to route TCP packets %s:80.  Received ICMP TTL Exceeded in transit response.' % (mac, ipofmac[mac], options.ip) })
 	seq = seq + 1
 
 	# Echo request
