@@ -46,7 +46,7 @@ if not options.ip:
 	print "[E] No target IP specified.  -h for help."
 	sys.exit(0)
 
-version = "1.0"
+version = "1.1"
 print "gateway-finder v%s http://pentestmonkey.net/tools/gateway-finder" % version
 print
 print "[+] Using interface %s (-I to change)" % options.interface
