@@ -86,24 +86,29 @@ signal.signal(signal.SIGTERM, handler)
 signal.signal(signal.SIGINT, handler)
 
 def processreply(p):
-	if p[IP].proto == 1: # ICMP
-		if p[ICMP].type == 11 and p[ICMP].code == 0:
-			if p[IPerror].proto == 1: # response to ICMP packet
-				seq = p[ICMP][ICMPerror].seq
+	# This might error if the packet isn't what we're expecting
+	try:
+		if p[IP].proto == 1: # ICMP
+			if p[ICMP].type == 11 and p[ICMP].code == 0:
+				if p[IPerror].proto == 1: # response to ICMP packet
+					seq = p[ICMP][ICMPerror].seq
+					vprint("Received reply: %s" % p.summary())
+					print "[+] %s" % packets[seq]['message']
+				if p[IPerror].proto == 6: # response to TCP packet
+					seq = p[ICMP][TCPerror].seq
+					vprint("Received reply: %s" % p.summary())
+					print "[+] %s" % packets[seq]['message']
+			else:
+				seq = p[ICMP].seq
 				vprint("Received reply: %s" % p.summary())
 				print "[+] %s" % packets[seq]['message']
-			if p[IPerror].proto == 6: # response to TCP packet
-				seq = p[ICMP][TCPerror].seq
+		if p[IP].proto == 6: # TCP
+			if p[IP].src == options.ip and p[TCP].dport == 80:
+				seq = p[TCP].ack - 1 # remote end increments our seq by 1
 				vprint("Received reply: %s" % p.summary())
 				print "[+] %s" % packets[seq]['message']
-		else:
-			seq = p[ICMP].seq
-			vprint("Received reply: %s" % p.summary())
-			print "[+] %s" % packets[seq]['message']
-	if p[IP].proto == 6: # TCP
-		seq = p[TCP].ack - 1 # remote end increments our seq by 1
-		vprint("Received reply: %s" % p.summary())
-		print "[+] %s" % packets[seq]['message']
+	except:
+		print "[E] Received unexpected packet.  Ignoring."
 	return False
 
 # Build list of packets to send
@@ -147,6 +152,6 @@ if pid:
 	
 else:
 	# child will sniff
-	filter="ip and ((icmp and icmp[0] = 11 and icmp[1] = 0)  or (src host %s and (icmp or (tcp and port 80))))" % options.ip
+	filter="ip and not arp and ((icmp and icmp[0] = 11 and icmp[1] = 0) or (src host %s and (icmp or (tcp and port 80))))" % options.ip
 	vprint("Child process sniffing on %s with filter '%s'" % (options.interface, filter))
 	sniff(iface=options.interface, store = 0, filter=filter, prn=None, lfilter=lambda x: processreply(x))
