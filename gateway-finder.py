@@ -23,6 +23,8 @@
 # me at pentestmonkey at pentestmonkey.net
 #
 
+import logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
 from scapy.all import *
 import sys
 import os
