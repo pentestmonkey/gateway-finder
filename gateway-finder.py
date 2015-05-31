@@ -103,7 +103,7 @@ def processreply(p):
 				vprint("Received reply: %s" % p.summary())
 				print "[+] %s" % packets[seq]['message']
 		if p[IP].proto == 6: # TCP
-			if p[IP].src == options.ip and p[TCP].dport == 80:
+			if p[IP].src == options.ip and p[TCP].sport == 80:
 				seq = p[TCP].ack - 1 # remote end increments our seq by 1
 				vprint("Received reply: %s" % p.summary())
 				print "[+] %s" % packets[seq]['message']
