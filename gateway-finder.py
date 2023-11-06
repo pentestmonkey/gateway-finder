@@ -1,8 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # gateway-finder - Tool to identify routers on the local LAN and paths to the Internet
 # Copyright (C) 2011 pentestmonkey@pentestmonkey.net
 # 
-# This program is free software; you can redistribute it and/or modify
+# This program is free software; you can redistribute it and/or modifyhttps://github.com/Crazyhead90/gateway-finder/tree/master
 # it under the terms of the GNU General Public License version 2 as 
 # published by the Free Software Foundation.
 # 
@@ -41,19 +41,19 @@ parser.add_option("-f", "--macfil", dest="macfile", help="File containing MAC ad
 (options, args) = parser.parse_args()
 
 if not options.macfile:
-	print "[E] No macs.txt specified.  -h for help."
+	print("[E] No macs.txt specified.  -h for help.")
 	sys.exit(0)
 
 if not options.ip:
-	print "[E] No target IP specified.  -h for help."
+	print("[E] No target IP specified.  -h for help.")
 	sys.exit(0)
 
 version = "1.1"
-print "gateway-finder v%s http://pentestmonkey.net/tools/gateway-finder" % version
-print
-print "[+] Using interface %s (-I to change)" % options.interface
+print("gateway-finder v%s http://pentestmonkey.net/tools/gateway-finder" % version)
+print()
+print("[+] Using interface %s (-I to change)" % options.interface)
 macfh = open(options.macfile, 'r')
-lines = map(lambda x: x.rstrip(), macfh.readlines())
+lines = [x.rstrip() for x in macfh.readlines()]
 macs = []
 ipofmac = {}
 for line in lines:
@@ -68,12 +68,12 @@ for line in lines:
 			if m and m.group(1) and m.group(2):
 				ipofmac[m.group(1).upper()] = m.group(2)
 
-macs = ipofmac.keys()
+macs = list(ipofmac.keys())
 
-print "[+] Found %s MAC addresses in %s" % (len(macs), options.macfile)
+print("[+] Found %s MAC addresses in %s" % (len(macs), options.macfile))
 
 if len(macs) == 0:
-	print "[E] No MAC addresses found in %s" % options.macfile
+	print("[E] No MAC addresses found in %s" % options.macfile)
 	sys.exit(0)
 
 def handler(signum, frame):
@@ -82,7 +82,7 @@ def handler(signum, frame):
 
 def vprint(message):
 	if options.verbose:
-		print "[-] %s" % message
+		print("[-] %s" % message)
 
 signal.signal(signal.SIGTERM, handler)
 signal.signal(signal.SIGINT, handler)
@@ -95,22 +95,22 @@ def processreply(p):
 				if p[IPerror].proto == 1: # response to ICMP packet
 					seq = p[ICMP][ICMPerror].seq
 					vprint("Received reply: %s" % p.summary())
-					print "[+] %s" % packets[seq]['message']
+					print("[+] %s" % packets[seq]['message'])
 				if p[IPerror].proto == 6: # response to TCP packet
 					seq = p[ICMP][TCPerror].seq
 					vprint("Received reply: %s" % p.summary())
-					print "[+] %s" % packets[seq]['message']
+					print("[+] %s" % packets[seq]['message'])
 			else:
 				seq = p[ICMP].seq
 				vprint("Received reply: %s" % p.summary())
-				print "[+] %s" % packets[seq]['message']
+				print("[+] %s" % packets[seq]['message'])
 		if p[IP].proto == 6: # TCP
 			if p[IP].src == options.ip and p[TCP].sport == 80:
 				seq = p[TCP].ack - 1 # remote end increments our seq by 1
 				vprint("Received reply: %s" % p.summary())
-				print "[+] %s" % packets[seq]['message']
+				print("[+] %s" % packets[seq]['message'])
 	except:
-		print "[E] Received unexpected packet.  Ignoring."
+		print("[E] Received unexpected packet.  Ignoring.")
 	return False
 
 # Build list of packets to send
@@ -148,8 +148,8 @@ if pid:
 	os.wait()
 	vprint("Parent exiting")
 
-	print "[+] Done"
-	print
+	print("[+] Done")
+	print()
 	sys.exit(0)
 	
 else:
